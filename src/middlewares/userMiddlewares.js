@@ -1,5 +1,6 @@
 import connection from "../database/databaseConnection.js";
 import signUpSchema from "../schemas/signUpSchema.js";
+import signInSchema from "../schemas/signInSchema.js";
 import joi from "joi";
 
 export async function signUpBodyValidation(req, res, next){
@@ -22,14 +23,53 @@ export async function signUpBodyValidation(req, res, next){
 }
 
 export async function newEmailValidation(req, res, next){
+    try{
+        const { email } = req.body;
 
-    const { email } = req.body;
+        const { rowCount } = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
 
-    const { rowCount } = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
+        if(rowCount !== 0){
+            return res.status(409).send("Email já cadastrado!");
+        }
 
-    if(rowCount !== 0){
-        return res.status(409).send("Email já cadastrado!");
+        next();
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
+}
+
+export async function signInBodyValidation(req, res, next){
+    
+    const { email, password } = req.body;
+
+    const { error } = signInSchema.validate({ email, password });
+
+    if(joi.isError(error)){
+        const errorMessage = error.details[0].message; 
+        
+        return res.status(422).send(errorMessage);
     }
 
     next();
+}
+
+export async function signInValidation(req, res, next){
+    try{
+        const { email, password } = req.body;
+
+        const { rowCount } = await connection.query(`
+            SELECT *
+            FROM users
+            WHERE email = $1
+            AND password = $2
+        `,[email, password]);
+
+        if(rowCount === 0){
+            return res.status(401).send("Email ou senha incorretos");
+        }
+
+        next()
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
 }

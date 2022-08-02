@@ -1,10 +1,10 @@
 import express from "express";
-import { signUpBodyValidation, newEmailValidation } from "../middlewares/userMiddlewares.js";
-import { postSignUp } from "../controllers/userController.js";
+import { signUpBodyValidation, newEmailValidation, signInBodyValidation, signInValidation } from "../middlewares/userMiddlewares.js";
+import { postSignUp, postSignIn } from "../controllers/userController.js";
 
 const router = express.Router();
 
 router.post("/signup", signUpBodyValidation, newEmailValidation, postSignUp);
-router.post("/signin");
+router.post("/signin", signInBodyValidation, signInValidation, postSignIn);
 
 export default router;
