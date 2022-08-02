@@ -22,11 +22,25 @@ export async function postSignIn(req, res){
     try{
         const token = uuid();
         const userId = res.locals.userId;
- 
-        await connection.query(`
-            INSERT INTO sessions ("userId", token)
-            VALUES ($1, $2)
-        `,[userId, token]);
+        
+        const { rowCount } = await connection.query(`
+            SELECT *
+            FROM sessions
+            WHERE "userId" = $1
+        `, [userId]);
+
+        if(rowCount === 0){
+            await connection.query(`
+                INSERT INTO sessions ("userId", token)
+                VALUES ($1, $2)
+                `,[userId, token]);
+        }else{
+            await connection.query(`
+                UPDATE sessions
+                SET token = $1
+                WHERE "userId" = $2
+                `,[token, userId]);
+        }
 
         return res.status(200).send(token);
     }catch{
