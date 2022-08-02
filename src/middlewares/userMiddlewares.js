@@ -1,6 +1,7 @@
 import connection from "../database/databaseConnection.js";
 import signUpSchema from "../schemas/signUpSchema.js";
 import signInSchema from "../schemas/signInSchema.js";
+import bcrypt from "bcrypt";
 import joi from "joi";
 
 export async function signUpBodyValidation(req, res, next){
@@ -57,16 +58,17 @@ export async function signInValidation(req, res, next){
     try{
         const { email, password } = req.body;
 
-        const { rowCount } = await connection.query(`
+        const { rowCount, rows: users } = await connection.query(`
             SELECT *
             FROM users
             WHERE email = $1
-            AND password = $2
-        `,[email, password]);
+        `,[email]);
 
-        if(rowCount === 0){
-            return res.status(401).send("Email ou senha incorretos");
+        if(rowCount === 0 || !bcrypt.compareSync(password, users[0].password)){
+            return res.status(401).send("Email ou senha incorretos.");
         }
+
+        res.locals.userId = users[0].id;
 
         next()
     }catch{
