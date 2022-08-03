@@ -7,6 +7,6 @@ const router = express.Router();
 router.post("/urls/shorten", urlBodyValidation, tokenValidation, repeatedUrlValidation, postShortUrl);
 router.get("/urls/:id", getShortUrlById);
 router.get("/urls/open/:shortUrl", redirectToUrl);
-router.delete("/urls/:id", tokenValidation, userOwnsUrlValidation, deleteUrlById)
+router.delete("/urls/:id", tokenValidation, userOwnsUrlValidation, deleteUrlById);
 
 export default router;

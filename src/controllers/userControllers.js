@@ -47,3 +47,31 @@ export async function postSignIn(req, res){
         return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
     }
 }
+
+export async function getUserInfo(req, res){
+    try{
+        const userDb = res.locals.user;
+
+        const { rows: userUrls } = await connection.query(`
+            SELECT 
+                id,
+                "shortUrl",
+                url,
+                visits as "visitCount"
+            FROM urls
+            WHERE "userId" = $1
+            ORDER BY id ASC
+        `, [userDb.id]);
+        
+        const user = {
+            id: userDb.id,
+            name: userDb.name,
+            visitCount: userDb.visitCount,
+            shortenedUrls: userUrls
+        }
+        
+        return res.status(200).send(user);
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
+    }
+}

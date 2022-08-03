@@ -1,10 +1,12 @@
+import { signUpBodyValidation, newEmailValidation, signInBodyValidation, signInValidation,userExists } from "../middlewares/userMiddlewares.js";
+import { postSignUp, postSignIn, getUserInfo } from "../controllers/userControllers.js";
+import { tokenValidation } from "../middlewares/urlsMiddlewares.js";
 import express from "express";
-import { signUpBodyValidation, newEmailValidation, signInBodyValidation, signInValidation } from "../middlewares/userMiddlewares.js";
-import { postSignUp, postSignIn } from "../controllers/userControllers.js";
 
 const router = express.Router();
 
 router.post("/signup", signUpBodyValidation, newEmailValidation, postSignUp);
 router.post("/signin", signInBodyValidation, signInValidation, postSignIn);
+router.get("/users/me", tokenValidation, userExists, getUserInfo)
 
 export default router;
