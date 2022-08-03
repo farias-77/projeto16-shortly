@@ -75,3 +75,16 @@ export async function getUserInfo(req, res){
         return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
+
+export async function getRanking(req, res){
+    // SELECT 
+	// users.id,
+	// users.name,
+	// COUNT(urls."shortUrl") AS "linksCount",
+	// SUM(urls.visits) as "visitCount"
+    // FROM users
+    // JOIN urls
+    // ON users.id = urls."userId"
+    // GROUP BY users.id
+    // LIMIT 10
+}
