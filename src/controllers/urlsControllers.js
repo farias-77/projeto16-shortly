@@ -37,3 +37,32 @@ export async function getShortUrlById(req, res){
         return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
     }
 }
+
+export async function redirectToUrl(req, res){
+    try{
+        const { shortUrl } = req.params;
+
+        const { rowCount, rows: dbUrls } = await connection.query(`
+            SELECT url, visits
+            FROM urls
+            WHERE "shortUrl" = $1
+        `, [shortUrl]);
+
+        if(rowCount === 0){
+            return res.status(404).send("A url encurtada fornecida não existe.")
+        }
+
+        const visits = dbUrls[0].visits;
+        const url = dbUrls[0].url;
+
+        await connection.query(`
+            UPDATE urls
+            SET visits = $1
+            WHERE "shortUrl" = $2
+        `, [visits+1, shortUrl]);
+
+        return res.redirect(url);
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
+}
