@@ -66,3 +66,18 @@ export async function redirectToUrl(req, res){
         return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
     }
 }
+
+export async function deleteUrlById(req, res){
+    try{   
+        const { id } = req.params;
+
+        await connection.query(`
+            DELETE FROM urls
+            WHERE id = $1
+        `, [id]);
+
+        return res.sendStatus(204);
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
+}

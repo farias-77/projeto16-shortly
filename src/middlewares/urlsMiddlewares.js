@@ -59,3 +59,28 @@ export async function repeatedUrlValidation(req, res, next){
         return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
     }
 }
+
+export async function userOwnsUrlValidation(req, res, next){
+    try{
+        const user = res.locals.user;
+        const { id } = req.params;
+        
+        const { rowCount, rows: dbUrl } = await connection.query(`
+        SELECT "userId"
+        FROM urls
+        WHERE id = $1
+        `, [id]);
+        
+        if(rowCount === 0){
+            return res.status(404).send("Não existe uma url encurtada com esse id.");
+        }
+        
+        if(dbUrl[0].userId !== user.userId){
+            return res.status(401).send("Apenas o dono pode deletar uma url!");
+        }
+
+        next();    
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
+}
