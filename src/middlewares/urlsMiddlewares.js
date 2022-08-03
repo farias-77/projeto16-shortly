@@ -39,3 +39,23 @@ export async function tokenValidation(req, res, next){
         return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
     }
 }
+
+export async function repeatedUrlValidation(req, res, next){
+    try{
+        const { url } = req.body;
+
+        const { rowCount } = await connection.query(`
+            SELECT *
+            FROM urls
+            WHERE url = $1
+        `, [url]);
+
+        if(rowCount !== 0){
+            return res.status(422).send("Url já cadastrada!");
+        }
+
+        next();
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+    }
+}
