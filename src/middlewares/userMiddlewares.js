@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 import joi from "joi";
 
 export async function signUpBodyValidation(req, res, next){
-
     const { name, email, password, confirmPassword } = req.body;
 
     const { error } = signUpSchema.validate({ name, email, password, confirmPassword });

@@ -1,6 +1,6 @@
 import express from "express";
 import { signUpBodyValidation, newEmailValidation, signInBodyValidation, signInValidation } from "../middlewares/userMiddlewares.js";
-import { postSignUp, postSignIn } from "../controllers/userController.js";
+import { postSignUp, postSignIn } from "../controllers/userControllers.js";
 
 const router = express.Router();
 
