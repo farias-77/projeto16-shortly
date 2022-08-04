@@ -78,7 +78,7 @@ export async function getUserInfo(req, res){
 
 export async function getRanking(req, res){
     try{
-        const { rows: rankingByVisits } = await connection.query(`
+        let { rows: rankingByVisits } = await connection.query(`
             SELECT 
                 users.id,
                 users.name,
@@ -88,9 +88,17 @@ export async function getRanking(req, res){
             LEFT JOIN urls
             ON users.id = urls."userId"
             GROUP BY users.id
-            ORDER BY "visitCount" ASC
+            ORDER BY "visitCount" DESC NULLS LAST, name
             LIMIT 10
         `);
+
+        rankingByVisits = rankingByVisits.map(user => {
+            if(!user.visitCount){
+                user.visitCount = "0";
+            }
+            
+            return user;
+        })
 
         return res.status(200).send(rankingByVisits);
     }catch{
