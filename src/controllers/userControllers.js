@@ -77,14 +77,23 @@ export async function getUserInfo(req, res){
 }
 
 export async function getRanking(req, res){
-    // SELECT 
-	// users.id,
-	// users.name,
-	// COUNT(urls."shortUrl") AS "linksCount",
-	// SUM(urls.visits) as "visitCount"
-    // FROM users
-    // JOIN urls
-    // ON users.id = urls."userId"
-    // GROUP BY users.id
-    // LIMIT 10
+    try{
+        const { rows: rankingByVisits } = await connection.query(`
+            SELECT 
+                users.id,
+                users.name,
+                COUNT(urls."shortUrl") AS "linksCount",
+                SUM(urls.visits) as "visitCount"
+            FROM users
+            LEFT JOIN urls
+            ON users.id = urls."userId"
+            GROUP BY users.id
+            ORDER BY "visitCount" ASC
+            LIMIT 10
+        `);
+
+        return res.status(200).send(rankingByVisits);
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
+    }
 }
