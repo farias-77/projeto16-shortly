@@ -43,14 +43,16 @@ export async function tokenValidation(req, res, next){
 export async function repeatedUrlValidation(req, res, next){
     try{
         const { url } = req.body;
+        const user = res.locals.user;
 
-        const { rowCount } = await connection.query(`
+        const { rowCount, rows: urlDb } = await connection.query(`
             SELECT *
             FROM urls
             WHERE url = $1
         `, [url]);
 
-        if(rowCount !== 0){
+
+        if(rowCount !== 0 && urlDb[0].userId === user.userId){
             return res.status(422).send("Url já cadastrada!");
         }
 
