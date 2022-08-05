@@ -51,7 +51,6 @@ export async function postSignIn(req, res){
 export async function getUserInfo(req, res){
     try{
         const userDb = res.locals.user;
-
         const { rows: userUrls } = await connection.query(`
             SELECT 
                 id,
