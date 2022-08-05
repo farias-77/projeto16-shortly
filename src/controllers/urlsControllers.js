@@ -14,7 +14,7 @@ export async function postShortUrl(req, res){
 
         return res.send({ shortUrl });
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
@@ -34,7 +34,7 @@ export async function getShortUrlById(req, res){
 
         return res.status(200).send(shortUrl[0]);
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
@@ -63,7 +63,7 @@ export async function redirectToUrl(req, res){
 
         return res.redirect(url);
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
@@ -78,6 +78,6 @@ export async function deleteUrlById(req, res){
 
         return res.sendStatus(204);
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }

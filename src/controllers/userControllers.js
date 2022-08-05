@@ -14,7 +14,7 @@ export async function postSignUp(req, res){
 
         return res.status(201).send("Usuário registrado com sucesso!");
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
@@ -44,7 +44,7 @@ export async function postSignIn(req, res){
 
         return res.status(200).send(token);
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 

@@ -34,7 +34,7 @@ export async function newEmailValidation(req, res, next){
 
         next();
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
@@ -71,7 +71,7 @@ export async function signInValidation(req, res, next){
 
         next()
     }catch{
-        return res.status(500).send("Ocorreu um erro inesperado, tente novamente por favor.");
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
 }
 
