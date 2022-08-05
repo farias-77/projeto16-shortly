@@ -51,8 +51,7 @@ export async function repeatedUrlValidation(req, res, next){
             WHERE url = $1
         `, [url]);
 
-
-        if(rowCount !== 0 && urlDb[0].userId === user.userId){
+        if(rowCount !== 0 && Number(urlDb[0].userId) === Number(user.userId)){
             return res.status(422).send("Url já cadastrada!");
         }
 
