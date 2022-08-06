@@ -79,7 +79,7 @@ export async function userOwnsAtLeastOneUrlValidation(req, res, next){
     try{
         const userId = res.locals.user.userId;
 
-        const { rowCount, rows: userDb } = await connection.query(`
+        const { rowCount } = await connection.query(`
             SELECT *
             FROM urls
             WHERE "userId" = $1
@@ -118,7 +118,7 @@ export async function prepareUserInfo(req, res, next){
             const { rows: userDb } = await connection.query(`
                 SELECT 
                     id,
-                    name,
+                    name
                 FROM users
                 WHERE users.id = $1;
             `, [userId]);
