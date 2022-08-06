@@ -50,23 +50,33 @@ export async function postSignIn(req, res){
 
 export async function getUserInfo(req, res){
     try{
+        let user;
         const userDb = res.locals.user;
-        const { rows: userUrls } = await connection.query(`
-            SELECT 
-                id,
-                "shortUrl",
-                url,
-                visits as "visitCount"
-            FROM urls
-            WHERE "userId" = $1
-            ORDER BY id ASC
-        `, [userDb.id]);
+        if(res.locals.owns){
+            const { rows: userUrls } = await connection.query(`
+                SELECT 
+                    id,
+                    "shortUrl",
+                    url,
+                    visits as "visitCount"
+                FROM urls
+                WHERE "userId" = $1
+                ORDER BY id ASC;
+            `, [userDb.id]);
         
-        const user = {
-            id: userDb.id,
-            name: userDb.name,
-            visitCount: userDb.visitCount,
-            shortenedUrls: userUrls
+            user = {
+                id: userDb.id,
+                name: userDb.name,
+                visitCount: userDb.visitCount,
+                shortenedUrls: userUrls
+            }
+        }else{
+            user = {
+                id: userDb.id,
+                name: userDb.name,
+                visitCount: 0,
+                shortenedUrls: []
+            }
         }
         
         return res.status(200).send(user);

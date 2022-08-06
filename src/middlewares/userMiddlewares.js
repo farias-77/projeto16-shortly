@@ -26,7 +26,7 @@ export async function newEmailValidation(req, res, next){
     try{
         const { email } = req.body;
 
-        const { rowCount } = await connection.query(`SELECT * FROM users WHERE email = $1`, [email]);
+        const { rowCount } = await connection.query(`SELECT * FROM users WHERE email = $1;`, [email]);
 
         if(rowCount !== 0){
             return res.status(409).send("Email já cadastrado!");
@@ -60,7 +60,7 @@ export async function signInValidation(req, res, next){
         const { rowCount, rows: users } = await connection.query(`
             SELECT *
             FROM users
-            WHERE email = $1
+            WHERE email = $1;
         `,[email]);
 
         if(rowCount === 0 || !bcrypt.compareSync(password, users[0].password)){
@@ -75,25 +75,54 @@ export async function signInValidation(req, res, next){
     }
 }
 
-export async function userExists(req, res, next){
+export async function userOwnsAtLeastOneUrlValidation(req, res, next){
     try{
         const userId = res.locals.user.userId;
 
         const { rowCount, rows: userDb } = await connection.query(`
-            SELECT 
-                users.id,
-                name,
-                SUM(visits) as "visitCount"
-            FROM users
-            JOIN urls
-            ON users.id = urls."userId"
-            WHERE users.id = $1
-            GROUP BY users.id
+            SELECT *
+            FROM urls
+            WHERE "userId" = $1
         `, [userId]);
 
         if(rowCount === 0){
-            return res.status(404).send("Não existe um usuário com o id fornecido pelo token!");
+            res.locals.owns = false;
+        }else{
+            res.locals.owns = true;
         }
+        
+        next();
+    }catch{
+        return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
+    } 
+}
+
+export async function prepareUserInfo(req, res, next){
+    try{
+        const userId = res.locals.user.userId;
+        let userDb;
+
+        if(res.locals.owns){
+            const { rows: userDb } = await connection.query(`
+                SELECT 
+                    users.id,
+                    users.name,
+                    SUM(visits) as "visitCount"
+                FROM users
+                JOIN urls
+                ON users.id = urls."userId"
+                WHERE users.id = $1
+                GROUP BY users.id;
+            `, [userId]);
+        }else{
+            const { rows: userDb } = await connection.query(`
+                SELECT 
+                    id,
+                    name,
+                FROM users
+                WHERE users.id = $1;
+            `, [userId]);
+        } 
 
         res.locals.user = userDb[0];
         
