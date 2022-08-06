@@ -129,7 +129,6 @@ export async function prepareUserInfo(req, res, next){
 
         res.locals.user = userDb[0];
         
-        return res.send(`${userOwnsUrl}`)
         next();
     }catch{
         return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
