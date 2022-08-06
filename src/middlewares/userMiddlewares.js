@@ -101,6 +101,7 @@ export async function prepareUserInfo(req, res, next){
     try{
         const userId = res.locals.user.userId;
         const userOwnsUrl = res.locals.owns;
+        return res.send(`${userOwnsUrl}`)
         let userDb;
 
         if(userOwnsUrl){
