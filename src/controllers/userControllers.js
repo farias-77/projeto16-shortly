@@ -53,7 +53,7 @@ export async function getUserInfo(req, res){
         const userDb = res.locals.user;
         const userOwnsUrl = res.locals.owns;
         let user;
-        return res.send(userDb)
+
         if(userOwnsUrl){
             const { rows: userUrls } = await connection.query(`
                 SELECT 
@@ -65,7 +65,7 @@ export async function getUserInfo(req, res){
                 WHERE "userId" = $1
                 ORDER BY id ASC;
             `, [userDb.id]);
-        
+            
             user = {
                 id: userDb.id,
                 name: userDb.name,
@@ -81,7 +81,7 @@ export async function getUserInfo(req, res){
             }
         }
         
-        return res.status(200).send(userDb);
+        return res.status(200).send(user);
     }catch{
         return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }
