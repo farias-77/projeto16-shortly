@@ -25,7 +25,7 @@ export async function tokenValidation(req, res, next){
         const { rowCount, rows: user} = await connection.query(`
             SELECT *
             FROM sessions
-            WHERE token = '$1'
+            WHERE token = $1
         `, [token]);
 
         if(rowCount === 0){
