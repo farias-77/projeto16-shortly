@@ -50,9 +50,11 @@ export async function postSignIn(req, res){
 
 export async function getUserInfo(req, res){
     try{
-        let user;
         const userDb = res.locals.user;
-        if(res.locals.owns){
+        const userOwnsUrl = res.locals.owns;
+        let user;
+
+        if(userOwnsUrl){
             const { rows: userUrls } = await connection.query(`
                 SELECT 
                     id,
@@ -79,7 +81,7 @@ export async function getUserInfo(req, res){
             }
         }
         
-        return res.status(200).send(user);
+        return res.status(200).send(userDb);
     }catch{
         return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
     }

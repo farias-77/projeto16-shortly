@@ -100,9 +100,10 @@ export async function userOwnsAtLeastOneUrlValidation(req, res, next){
 export async function prepareUserInfo(req, res, next){
     try{
         const userId = res.locals.user.userId;
+        const userOwnsUrl = res.locals.owns;
         let userDb;
 
-        if(res.locals.owns){
+        if(userOwnsUrl){
             const { rows: userDb } = await connection.query(`
                 SELECT 
                     users.id,
