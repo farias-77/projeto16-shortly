@@ -77,7 +77,7 @@ export async function signInValidation(req, res, next){
 
 export async function userExists(req, res, next){
     try{
-        const { userId } = res.locals.user;
+        const userId = res.locals.user.userId;
         return res.send(userId)
         const { rowCount, rows: userDb } = await connection.query(`
             SELECT 
