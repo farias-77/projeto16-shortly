@@ -33,7 +33,7 @@ export async function tokenValidation(req, res, next){
         }
 
         res.locals.user = user[0];
-
+        
         next();
     }catch{
         return res.status(500).send("Ocorreu um erro inesperado, por favor tente novamente.");
