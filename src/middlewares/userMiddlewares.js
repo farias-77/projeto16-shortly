@@ -101,11 +101,10 @@ export async function prepareUserInfo(req, res, next){
     try{
         const userId = res.locals.user.userId;
         const userOwnsUrl = res.locals.owns;
-        
-        let userDb;
+        let queryString;
 
         if(userOwnsUrl){
-            const { rows: userDb } = await connection.query(`
+            queryString = `
                 SELECT 
                     users.id,
                     users.name,
@@ -115,16 +114,19 @@ export async function prepareUserInfo(req, res, next){
                 ON users.id = urls."userId"
                 WHERE users.id = $1
                 GROUP BY users.id;
-            `, [userId]);
+            `;
         }else{
-            const { rows: userDb } = await connection.query(`
+            queryString = `
                 SELECT 
                     id,
                     name
                 FROM users
                 WHERE users.id = $1;
-            `, [userId]);
+            `;
         } 
+        
+        const { rows: userDb } = await connection.query(queryString, [userId]);
+
         res.locals.user = userDb[0];
         
         return res.send(`${userOwnsUrl}`)
