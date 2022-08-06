@@ -101,7 +101,7 @@ export async function prepareUserInfo(req, res, next){
     try{
         const userId = res.locals.user.userId;
         const userOwnsUrl = res.locals.owns;
-        return res.send(`${userOwnsUrl}`)
+        
         let userDb;
 
         if(userOwnsUrl){
@@ -125,7 +125,7 @@ export async function prepareUserInfo(req, res, next){
                 WHERE users.id = $1;
             `, [userId]);
         } 
-
+        return res.send(`${userOwnsUrl}`)
         res.locals.user = userDb[0];
         
         next();
