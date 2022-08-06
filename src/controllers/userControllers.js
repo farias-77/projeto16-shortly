@@ -53,7 +53,7 @@ export async function getUserInfo(req, res){
         const userDb = res.locals.user;
         const userOwnsUrl = res.locals.owns;
         let user;
-
+        return res.send(userDb.id)
         if(userOwnsUrl){
             const { rows: userUrls } = await connection.query(`
                 SELECT 
