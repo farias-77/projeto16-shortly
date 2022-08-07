@@ -9,7 +9,7 @@ export async function urlBodyValidation(req, res, next){
     const { error } = urlSchema.validate({ url });
 
     if(joi.isError(error)){        
-        return res.status(422).send(`Por favor insira uma url válida! (Lembre-se de colocar "https://" 😉`); 
+        return res.status(422).send(`Por favor insira uma url válida! Lembre-se de colocar "https://" 😉`); 
     }
 
     next();
